@@ -20,7 +20,7 @@ RUN yarn build
 
 FROM node:17-alpine3.14
 ENV NODE_ENV=production
-ENV PORT=3050
+ENV PORT=3000
 
 EXPOSE $PORT
 
