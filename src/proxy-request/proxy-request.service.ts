@@ -25,6 +25,7 @@ export class ProxyRequestService {
   currentProxyIndex = 0;
   init = async () => {
     while (true) {
+      console.log('init');
       this.browser = await puppeteer.launch({
         headless: false,
         args: [
@@ -34,6 +35,8 @@ export class ProxyRequestService {
         ],
         ignoreDefaultArgs: ['--disable-extensions'],
       });
+      console.log('init end');
+
       break;
     }
 
