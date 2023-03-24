@@ -10,7 +10,7 @@ COPY package*.json ./
 
 # Install dependencies
 RUN npm install
-RUN npm
+
 
 # Install Puppeteer dependencies
 RUN apt-get update && apt-get install -y \
