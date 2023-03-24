@@ -24,14 +24,18 @@ export class ProxyRequestService {
   password = 'qwerty';
   currentProxyIndex = 0;
   init = async () => {
-    this.browser = await puppeteer.launch({
-      headless: false,
-      args: [
-        this.proxy[this.currentProxyIndex],
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-      ],
-    });
+    while (true) {
+      this.browser = await puppeteer.launch({
+        headless: false,
+        args: [
+          this.proxy[this.currentProxyIndex],
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+        ],
+      });
+      break;
+    }
+
     this.page = await this.browser.newPage();
     await this.page.authenticate({
       username: this.username,
