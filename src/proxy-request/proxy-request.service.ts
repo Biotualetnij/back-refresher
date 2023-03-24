@@ -5,7 +5,7 @@ const puppeteer = require('puppeteer');
 export class ProxyRequestService {
   browser;
   constructor() {
-    this.rotateProxy();
+    this.rotateProxy(0);
   }
   page;
   proxy = [
@@ -26,6 +26,7 @@ export class ProxyRequestService {
   async init() {
     try {
       while (true) {
+        console.log(this.proxy[this.currentProxyIndex]);
         this.browser = await puppeteer.launch({
           headless: true,
           args: [
@@ -48,8 +49,23 @@ export class ProxyRequestService {
       console.log(e);
     }
   }
-  async rotateProxy() {
-    this.currentProxyIndex = (this.currentProxyIndex + 1) % this.proxy.length;
+  async rotateProxy(index: number) {
+    this.proxy = [
+      '--proxy-server=http://gate.smartproxy.com:10000',
+      '--proxy-server=http://gate.smartproxy.com:10001',
+      '--proxy-server=http://gate.smartproxy.com:10002',
+      '--proxy-server=http://gate.smartproxy.com:10003',
+      '--proxy-server=http://gate.smartproxy.com:10004',
+      '--proxy-server=http://gate.smartproxy.com:10005',
+      '--proxy-server=http://gate.smartproxy.com:10006',
+      '--proxy-server=http://gate.smartproxy.com:10007',
+      '--proxy-server=http://gate.smartproxy.com:10008',
+      '--proxy-server=http://gate.smartproxy.com:10009',
+    ];
+    this.username = 'spfa027314';
+    this.password = 'qwerty';
+
+    this.currentProxyIndex = (index + 1) % this.proxy.length;
     console.log(
       'rotated proxy////////////////////////////////////////////////////////////////////////',
     );
@@ -57,7 +73,9 @@ export class ProxyRequestService {
       await this.browser.close();
     }
     // Schedule the next proxy rotation
-    setTimeout(this.rotateProxy, 3 * 60 * 1000);
+    setTimeout(() => {
+      this.rotateProxy(this.currentProxyIndex);
+    }, 3 * 60 * 1000);
   }
 
   async getProxyRequest(link): Promise<any> {
@@ -66,16 +84,13 @@ export class ProxyRequestService {
         await this.init();
       }
       await this.page.setDefaultNavigationTimeout(0);
-      console.log('goto');
       await this.page.goto(link);
-      console.log('wait request');
 
       await this.page.waitForRequest(
         (request) => request.url().includes('0-1080'),
         { timeout: 10000 },
       );
       await this.page.waitForTimeout(1000);
-      console.log('wait for content');
       const txt = await this.page.content();
 
       // cosnole.log(txt);
