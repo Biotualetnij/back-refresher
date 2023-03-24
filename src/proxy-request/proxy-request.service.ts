@@ -24,27 +24,31 @@ export class ProxyRequestService {
   password = 'qwerty';
   currentProxyIndex = 0;
   async init() {
-    while (true) {
-      console.log('init');
-      this.browser = await puppeteer.launch({
-        headless: true,
-        args: [
-          this.proxy[this.currentProxyIndex],
-          // '--no-sandbox',
-          // '--disable-setuid-sandbox',
-        ],
-        // ignoreDefaultArgs: ['--disable-extensions'],
+    try {
+      while (true) {
+        console.log('init');
+        this.browser = await puppeteer.launch({
+          headless: true,
+          args: [
+            this.proxy[this.currentProxyIndex],
+            // '--no-sandbox',
+            // '--disable-setuid-sandbox',
+          ],
+          // ignoreDefaultArgs: ['--disable-extensions'],
+        });
+        console.log('init end');
+
+        break;
+      }
+
+      this.page = await this.browser.newPage();
+      await this.page.authenticate({
+        username: this.username,
+        password: this.password,
       });
-      console.log('init end');
-
-      break;
+    } catch (e) {
+      console.log(e);
     }
-
-    this.page = await this.browser.newPage();
-    await this.page.authenticate({
-      username: this.username,
-      password: this.password,
-    });
   }
   async rotateProxy() {
     this.currentProxyIndex = (this.currentProxyIndex + 1) % this.proxy.length;
@@ -79,6 +83,7 @@ export class ProxyRequestService {
       // cosnole.log(txt);
       return await txt;
     } catch (e) {
+      console.log(e);
       return 'error';
     }
   }
