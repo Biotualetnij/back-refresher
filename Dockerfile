@@ -10,6 +10,7 @@ COPY package*.json ./
 
 # Install dependencies
 RUN npm install
+RUN npm
 
 # Install Puppeteer dependencies
 RUN apt-get update && apt-get install -y \
@@ -60,6 +61,10 @@ RUN npm run build
 
 # Expose the port the app runs on
 EXPOSE 3000
+
+RUN npm ci
+COPY . .
+
 
 # Start the NestJS application
 CMD ["npm", "run", "start:prod"]
