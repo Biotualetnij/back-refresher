@@ -31,10 +31,10 @@ export class ProxyRequestService {
           headless: true,
           args: [
             this.proxy[this.currentProxyIndex],
-            // '--no-sandbox',
-            // '--disable-setuid-sandbox',
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
           ],
-          // ignoreDefaultArgs: ['--disable-extensions'],
+          ignoreDefaultArgs: ['--disable-extensions'],
         });
         console.log('init end');
 
