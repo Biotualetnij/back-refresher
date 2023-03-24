@@ -1,38 +1,67 @@
 
 FROM node:17-alpine3.14 as builder
 
+
+# Set the working directory
 WORKDIR /app
 
-COPY package.json .
-COPY yarn.lock .
-COPY tsconfig.build.json .
+# Copy package.json and package-lock.json (or yarn.lock) files
+COPY package*.json ./
 
+# Install dependencies
+RUN npm install
 
-COPY env .
-COPY env ./env
+# Install Puppeteer dependencies
+RUN apt-get update && apt-get install -y \
+    gconf-service \
+    libasound2 \
+    libatk1.0-0 \
+    libc6 \
+    libcairo2 \
+    libcups2 \
+    libdbus-1-3 \
+    libexpat1 \
+    libfontconfig1 \
+    libgcc1 \
+    libgconf-2-4 \
+    libgdk-pixbuf2.0-0 \
+    libglib2.0-0 \
+    libgtk-3-0 \
+    libnspr4 \
+    libpango-1.0-0 \
+    libpangocairo-1.0-0 \
+    libstdc++6 \
+    libx11-6 \
+    libx11-xcb1 \
+    libxcb1 \
+    libxcomposite1 \
+    libxcursor1 \
+    libxdamage1 \
+    libxext6 \
+    libxfixes3 \
+    libxi6 \
+    libxrandr2 \
+    libxrender1 \
+    libxss1 \
+    libxtst6 \
+    ca-certificates \
+    fonts-liberation \
+    libappindicator1 \
+    libnss3 \
+    lsb-release \
+    xdg-utils \
+    wget
 
-RUN yarn --production=true
-RUN cp -R node_modules prod_node_modules
-RUN yarn --production=false
+# Copy the rest of the application code
 COPY . .
 
-RUN yarn build 
+# Build the application
+RUN npm run build
 
-FROM node:17-alpine3.14
-ENV NODE_ENV=production
-ENV PORT=3000
+# Expose the port the app runs on
+EXPOSE 3000
 
-EXPOSE $PORT
-
-WORKDIR /app
-
-COPY package.json .
-COPY --from=builder /app/env ./env
-COPY --from=builder /app/prod_node_modules ./node_modules
-COPY --from=builder /app/dist ./dist
-
-
-
-
+# Start the NestJS application
+CMD ["npm", "run", "start:prod"]
 
 

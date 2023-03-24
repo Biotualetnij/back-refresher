@@ -25,7 +25,12 @@ export class ProxyRequestService {
   currentProxyIndex = 0;
   init = async () => {
     this.browser = await puppeteer.launch({
-      args: [this.proxy[this.currentProxyIndex]],
+      headless: false,
+      args: [
+        this.proxy[this.currentProxyIndex],
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+      ],
     });
     this.page = await this.browser.newPage();
     await this.page.authenticate({
@@ -33,7 +38,7 @@ export class ProxyRequestService {
       password: this.password,
     });
   };
-  rotateProxy = async () => {
+  async rotateProxy() {
     this.currentProxyIndex = (this.currentProxyIndex + 1) % this.proxy.length;
     console.log(
       'rotated proxy////////////////////////////////////////////////////////////////////////',
@@ -43,9 +48,9 @@ export class ProxyRequestService {
     }
     // Schedule the next proxy rotation
     setTimeout(this.rotateProxy, 3 * 60 * 1000);
-  };
+  }
 
-  getProxyRequest = async (link) => {
+  async getProxyRequest(link) {
     try {
       if (!(await this.browser?.isConnected())) {
         await this.init();
@@ -68,5 +73,5 @@ export class ProxyRequestService {
     } catch (e) {
       return 'error';
     }
-  };
+  }
 }
