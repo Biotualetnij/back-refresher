@@ -43,7 +43,6 @@ export class AppService {
               .createHash('sha256')
               .update(names.toString())
               .digest('base64');
-            console.log(body);
             if ((this.hash == hash && !isfirstTime) || body == 'error') {
               res.send({ data: 'No change', isNotNeeded: true });
             } else {
