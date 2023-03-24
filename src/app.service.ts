@@ -31,6 +31,7 @@ export class AppService {
           url + `&${randomQuery}=${randomQuery}`,
         ),
       );
+      console.log(body, 'body');
       this.htmlToJson.getJson(body).done((result) => {
         var page = result;
 
