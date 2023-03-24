@@ -1,5 +1,5 @@
 
-FROM node:17-alpine3.14 as builder
+FROM node:17 as builder
 
 
 # Set the working directory
