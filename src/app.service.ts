@@ -39,13 +39,12 @@ export class AppService {
                   result?.cars?.filter[1]?.name +
                   result?.cars?.filter[2]?.name
                 : '';
-            console.log(names);
             const hash = crypto
               .createHash('sha256')
               .update(names.toString())
               .digest('base64');
-
-            if (this.hash == hash && !isfirstTime) {
+            console.log(body);
+            if ((this.hash == hash && !isfirstTime) || body == 'error') {
               res.send({ data: 'No change', isNotNeeded: true });
             } else {
               this.hash = hash;
