@@ -29,7 +29,6 @@ export class AppService {
       let body = await this.proxyRequest.getProxyRequest(
         url + `&${randomQuery}=${randomQuery}`,
       );
-      console.log(body, 'body');
       this.htmlToJson.getJson(body).done((result) => {
         var page = result;
 
