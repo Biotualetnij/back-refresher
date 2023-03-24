@@ -32,6 +32,7 @@ export class ProxyRequestService {
           '--no-sandbox',
           '--disable-setuid-sandbox',
         ],
+        ignoreDefaultArgs: ['--disable-extensions'],
       });
       break;
     }

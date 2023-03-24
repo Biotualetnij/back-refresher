@@ -66,7 +66,6 @@ RUN npm ci
 COPY . .
 
 
-# Start the NestJS application
-CMD ["npm", "run", "start:prod"]
+
 
 
