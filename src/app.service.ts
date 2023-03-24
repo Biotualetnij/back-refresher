@@ -26,10 +26,8 @@ export class AppService {
     // );
 
     try {
-      let body = await firstValueFrom(
-        await this.proxyRequest.getProxyRequest(
-          url + `&${randomQuery}=${randomQuery}`,
-        ),
+      let body = await this.proxyRequest.getProxyRequest(
+        url + `&${randomQuery}=${randomQuery}`,
       );
       console.log(body, 'body');
       this.htmlToJson.getJson(body).done((result) => {

@@ -27,13 +27,13 @@ export class ProxyRequestService {
     while (true) {
       console.log('init');
       this.browser = await puppeteer.launch({
-        headless: false,
+        headless: true,
         args: [
           this.proxy[this.currentProxyIndex],
-          '--no-sandbox',
-          '--disable-setuid-sandbox',
+          // '--no-sandbox',
+          // '--disable-setuid-sandbox',
         ],
-        ignoreDefaultArgs: ['--disable-extensions'],
+        // ignoreDefaultArgs: ['--disable-extensions'],
       });
       console.log('init end');
 
@@ -58,7 +58,7 @@ export class ProxyRequestService {
     setTimeout(this.rotateProxy, 3 * 60 * 1000);
   }
 
-  async getProxyRequest(link) {
+  async getProxyRequest(link): Promise<any> {
     try {
       if (!(await this.browser?.isConnected())) {
         await this.init();
@@ -77,7 +77,7 @@ export class ProxyRequestService {
       const txt = await this.page.content();
 
       // cosnole.log(txt);
-      return txt;
+      return await txt;
     } catch (e) {
       return 'error';
     }
