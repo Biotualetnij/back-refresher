@@ -23,7 +23,7 @@ export class ProxyRequestService {
   username = 'spfa027314';
   password = 'qwerty';
   currentProxyIndex = 0;
-  init = async () => {
+  async init() {
     while (true) {
       console.log('init');
       this.browser = await puppeteer.launch({
@@ -45,7 +45,7 @@ export class ProxyRequestService {
       username: this.username,
       password: this.password,
     });
-  };
+  }
   async rotateProxy() {
     this.currentProxyIndex = (this.currentProxyIndex + 1) % this.proxy.length;
     console.log(
