@@ -3,6 +3,8 @@ version: '3.8'
 services:
   nestjs_app:
     build: .
+    ports:
+      - 3000:3000
     command: sh -c "apt-get update && apt-get -y install chromium && npm run start:prod "
     restart: unless-stopped
     environment:
