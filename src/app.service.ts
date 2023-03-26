@@ -24,6 +24,7 @@ export class AppService {
     url: string,
     res: Response,
     isfirstTime: boolean,
+    clientCode: boolean
   ): Promise<any> {
     const randomQuery = Date.now();
     // const response = await firstValueFrom(
@@ -36,6 +37,7 @@ export class AppService {
     console.log(url)
 
     if(this.locker.isInProcess(url)){
+      console.log('INPROCESS',url);
       res.send({ data: 'No change', isNotNeeded: true });
     }
 
@@ -51,6 +53,9 @@ export class AppService {
             
             var page = result;
 
+            console.log("FIRST:",result.cars.filter[0]);
+            console.log("LAST:",result.cars.filter[result.cars.filter.length-1]);
+
             let names =
               result?.cars?.filter[0]?.name +
               result?.cars?.filter[1]?.name +
@@ -60,9 +65,16 @@ export class AppService {
                   result?.cars?.filter[2]?.name
                 : '';
            
+
+
             if (this.hash.hashExist(url,names) || body == 'error') {
-              res.send({ data: 'No change', isNotNeeded: true });
-            } else {
+              if(isfirstTime){
+                res.send(page);
+              }else{
+                res.send({ data: 'No change', isNotNeeded: true });
+              }
+            }  else {
+              this.hash.setClientSaw(clientCode, names);
               this.hash.setUrlHash(url,names);
               res.send(page);
             }

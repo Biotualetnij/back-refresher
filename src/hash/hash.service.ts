@@ -11,6 +11,8 @@ export class HashService {
 
 hashList = [];
 
+clientSaw = [];
+
     public hashExist(url, factor){ 
 
         console.log(this.hashList);
@@ -25,13 +27,44 @@ hashList = [];
         if(index > -1){
           this.hashList.splice(index,1);
         }
+
+        
+
+       
         
         this.hashList.push({
             url,
-            hash: this.encode(factor)
+            hash:  this.encode(factor)
        });
-       
     }
+
+
+    public setClientSaw(clientCode, factor){
+        // const hash =  this.encode(factor);
+
+        const hash = this.encode(factor);
+
+        const index = findIndex(this.clientSaw, { hash })
+
+        if(findIndex(this.clientSaw, { hash }) === -1){
+            this.clientSaw.push({
+                hash,
+                clients: [clientCode]
+            });
+        }
+
+        if(this.clientSaw[index].clients.indexOf(clientCode) === -1 ){
+            this.clientSaw[index].clients.push(clientCode);
+        }
+
+        
+        
+    }
+
+    public setClientSawHash(clientCode, factor){
+        // const hash =  this.encode(factor);
+    }
+
 
     private encode(factor){
       return crypto
