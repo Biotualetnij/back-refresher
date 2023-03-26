@@ -7,29 +7,67 @@ var crypto = require('crypto');
 export class HashService {
   hashList = [];
 
-  public hashExist(url, factor) {
-    console.log(this.hashList);
-    console.log(this.encode(factor));
-    return !!find(this.hashList, { url, hash: this.encode(factor) });
-  }
+  clientSaw = [];
 
-  public setUrlHash(url, factor) {
-    const index = findIndex(this.hashList, { url });
+    public hashExist(url, factor){ 
 
-    if (index > -1) {
-      this.hashList.splice(index, 1);
+        console.log(this.hashList);
+        console.log(this.encode(factor))
+       return !!find(this.hashList, { url, hash: this.encode(factor) });
+    }
+    
+    public setUrlHash(url, factor){
+
+      const index = findIndex(this.hashList, { url });
+
+        if(index > -1){
+          this.hashList.splice(index,1);
+        }
+
+        
+        this.hashList.push({
+            url,
+            hash:  this.encode(factor)
+       });
     }
 
-    this.hashList.push({
-      url,
-      hash: this.encode(factor),
-    });
-  }
 
-  private encode(factor) {
-    return crypto
-      .createHash('sha256')
-      .update(factor.toString())
-      .digest('base64');
-  }
+    public setClientSaw(clientCode, factor){
+        
+        const hash = this.encode(factor);
+
+        const index = findIndex(this.clientSaw, { hash })
+
+        if(index === -1){
+          return  this.clientSaw.push({
+                hash,
+                clients: [clientCode]
+            });
+        }
+
+        if(this.clientSaw[index].clients.indexOf(clientCode) === -1 ){
+        return   this.clientSaw[index].clients.push(clientCode);
+        }
+    }
+
+    public clientSawHash(clientCode, factor) {
+        const hash = this.encode(factor);
+        const index = findIndex(this.clientSaw, { hash })
+    
+        if(index > -1 && this.clientSaw[index].clients.indexOf(clientCode) > -1){
+            return true;
+        }
+
+        return false;
+    }
+
+   
+    private encode(factor){
+      return crypto
+        .createHash('sha256')
+        .update(factor.toString())
+        .digest('base64');
+    }
+
+  
 }

@@ -67,7 +67,8 @@ export class AppService {
 
 
             if (this.hash.hashExist(url,names) || body == 'error') {
-              if(isfirstTime){
+              if(isfirstTime ||  !this.hash.clientSawHash(clientCode, names)){
+                this.hash.setClientSaw(clientCode, names);
                 res.send(page);
               }else{
                 res.send({ data: 'No change', isNotNeeded: true });
