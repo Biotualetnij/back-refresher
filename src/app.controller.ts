@@ -9,11 +9,12 @@ export class AppController {
 
   @Post()
   async getRefreshedPage(@Body() body: any, @Res() res: Response) {
-    return await this.appService.getRefreshedPage(
+    let result = await this.appService.getRefreshedPage(
       body.url,
       res,
       body.firstTime,
-      body.clientCode
+      body.clientCode,
     );
+    res.send(result);
   }
 }

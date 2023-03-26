@@ -39,7 +39,6 @@ export class ProxyRequestService {
 
         break;
       }
-
       this.page = await this.browser.newPage();
       await this.page.authenticate({
         username: this.username,
@@ -83,16 +82,17 @@ export class ProxyRequestService {
       if (!(await this.browser?.isConnected())) {
         await this.init();
       }
+
       await this.page.setDefaultNavigationTimeout(0);
+      console.log('goto');
+
       await this.page.goto(link);
 
-      await this.page.waitForRequest(
-        (request) => request.url().includes('0-1080'),
-        { timeout: 10000 },
+      await this.page.waitForRequest((request) =>
+        request.url().includes('0-1080'),
       );
       await this.page.waitForTimeout(1000);
       const txt = await this.page.content();
-
       // cosnole.log(txt);
       return await txt;
     } catch (e) {
