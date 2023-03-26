@@ -10,8 +10,7 @@ export class HashService {
   public hashExist(url, factor) {
     console.log(this.hashList);
     console.log(this.encode(factor));
-    const result = find(this.hashList, { url, hash: this.encode(factor) });
-    return result.url === url && result.hash === this.encode(factor);
+    return !!find(this.hashList, { url, hash: this.encode(factor) });
   }
 
   public setUrlHash(url, factor) {
