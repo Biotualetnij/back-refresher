@@ -7,7 +7,7 @@ import { ProxyRequestService } from './proxy-request/proxy-request.service';
 var crypto = require('crypto');
 import { Response } from 'express';
 import { HashService } from './hash/hash.service';
-import { LockerService } from './locker/locker.service'; 
+import { LockerService } from './locker/locker.service';
 
 @Injectable()
 export class AppService {
@@ -16,9 +16,8 @@ export class AppService {
     private htmlToJson: HtmlToJsonService,
     private proxyRequest: ProxyRequestService,
     private hash: HashService,
-    private locker: LockerService
+    private locker: LockerService,
   ) {}
- 
 
   async getRefreshedPage(
     url: string,
@@ -32,10 +31,9 @@ export class AppService {
     //   ),
     // );
 
+    console.log(url);
 
-    console.log(url)
-
-    if(this.locker.isInProcess(url)){
+    if (this.locker.isInProcess(url)) {
       res.send({ data: 'No change', isNotNeeded: true });
     }
 
@@ -46,9 +44,8 @@ export class AppService {
       .then((body) => {
         try {
           this.htmlToJson.getJson(body).done((result) => {
-           
             this.locker.setUrlProcessFinished(url);
-            
+
             var page = result;
 
             let names =
@@ -59,18 +56,21 @@ export class AppService {
                   result?.cars?.filter[1]?.name +
                   result?.cars?.filter[2]?.name
                 : '';
-           
-            if (this.hash.hashExist(url,names) || body == 'error') {
+
+            if (
+              (this.hash.hashExist(url, names) || body == 'error') &&
+              !isfirstTime
+            ) {
               res.send({ data: 'No change', isNotNeeded: true });
             } else {
-              this.hash.setUrlHash(url,names);
+              this.hash.setUrlHash(url, names);
               res.send(page);
             }
           });
         } catch (error) {
           this.locker.setUrlProcessFinished(url);
           console.log(error);
-          res.send({ data: 'No change', isNotNeeded: true, error:true });
+          res.send({ data: 'No change', isNotNeeded: true, error: true });
         }
       });
     // console.log(response.data);
