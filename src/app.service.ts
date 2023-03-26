@@ -23,7 +23,7 @@ export class AppService {
     url: string,
     res: Response,
     isfirstTime: boolean,
-    clientCode: boolean
+    clientCode: boolean,
   ): Promise<any> {
     const randomQuery = Date.now();
     // const response = await firstValueFrom(
@@ -34,11 +34,13 @@ export class AppService {
 
     console.log(url);
 
-    console.log(url)
+    console.log(url);
 
-    if(this.locker.isInProcess(url)){
-      console.log('INPROCESS',url);
-      res.send({ data: 'No change', isNotNeeded: true });
+    if (this.locker.isInProcess(url)) {
+      console.log('INPROCESS', url);
+      setTimeout(() => {
+        res.send({ data: 'No change', isNotNeeded: true });
+      }, 3000);
     }
 
     this.locker.setUrlInProcess(url);
@@ -52,8 +54,11 @@ export class AppService {
 
             var page = result;
 
-            console.log("FIRST:",result.cars.filter[0]);
-            console.log("LAST:",result.cars.filter[result.cars.filter.length-1]);
+            console.log('FIRST:', result.cars.filter[0]);
+            console.log(
+              'LAST:',
+              result.cars.filter[result.cars.filter.length - 1],
+            );
 
             let names =
               result?.cars?.filter[0]?.name +
@@ -63,26 +68,26 @@ export class AppService {
                   result?.cars?.filter[1]?.name +
                   result?.cars?.filter[2]?.name
                 : '';
-           
 
-
-            if (this.hash.hashExist(url,names) || body == 'error') {
-              if(isfirstTime ||  !this.hash.clientSawHash(clientCode, names)){
+            if (this.hash.hashExist(url, names) || body == 'error') {
+              if (isfirstTime || !this.hash.clientSawHash(clientCode, names)) {
                 this.hash.setClientSaw(clientCode, names);
                 res.send(page);
-              }else{
+              } else {
                 res.send({ data: 'No change', isNotNeeded: true });
               }
-            }  else {
+            } else {
               this.hash.setClientSaw(clientCode, names);
-              this.hash.setUrlHash(url,names);
+              this.hash.setUrlHash(url, names);
               res.send(page);
             }
           });
         } catch (error) {
           this.locker.setUrlProcessFinished(url);
           console.log(error);
-          res.send({ data: 'No change', isNotNeeded: true, error: true });
+          setTimeout(() => {
+            res.send({ data: 'No change', isNotNeeded: true, error: true });
+          }, 3000);
         }
       });
     // console.log(response.data);
