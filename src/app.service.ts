@@ -7,7 +7,7 @@ import { ProxyRequestService } from './proxy-request/proxy-request.service';
 var crypto = require('crypto');
 import { Response } from 'express';
 import { HashService } from './hash/hash.service';
-import { LockerService } from './locker/locker.service'; 
+import { LockerService } from './locker/locker.service';
 
 @Injectable()
 export class AppService {
@@ -16,9 +16,8 @@ export class AppService {
     private htmlToJson: HtmlToJsonService,
     private proxyRequest: ProxyRequestService,
     private hash: HashService,
-    private locker: LockerService
+    private locker: LockerService,
   ) {}
- 
 
   async getRefreshedPage(
     url: string,
@@ -33,6 +32,7 @@ export class AppService {
     //   ),
     // );
 
+    console.log(url);
 
     console.log(url)
 
@@ -48,9 +48,8 @@ export class AppService {
       .then((body) => {
         try {
           this.htmlToJson.getJson(body).done((result) => {
-           
             this.locker.setUrlProcessFinished(url);
-            
+
             var page = result;
 
             console.log("FIRST:",result.cars.filter[0]);
@@ -82,7 +81,7 @@ export class AppService {
         } catch (error) {
           this.locker.setUrlProcessFinished(url);
           console.log(error);
-          res.send({ data: 'No change', isNotNeeded: true, error:true });
+          res.send({ data: 'No change', isNotNeeded: true, error: true });
         }
       });
     // console.log(response.data);
