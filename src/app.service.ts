@@ -40,6 +40,7 @@ export class AppService {
         setTimeout(() => {
           resolve({ data: 'No change', isNotNeeded: true });
         }, 3000);
+        return;
       }
 
       this.locker.setUrlInProcess(url);
@@ -75,16 +76,19 @@ export class AppService {
                   this.hash.setClientSaw(clientCode, names);
 
                   resolve(page);
+                  return;
                 } else {
                   setTimeout(() => {
                     resolve({ data: 'No change', isNotNeeded: true });
                   }, 1000);
+                  return;
                 }
               } else {
                 this.hash.setClientSaw(clientCode, names);
                 this.hash.setUrlHash(url, names);
 
                 resolve(page);
+                return;
               }
             });
           } catch (error) {
@@ -93,6 +97,7 @@ export class AppService {
             setTimeout(() => {
               resolve({ data: 'No change', isNotNeeded: true, error: true });
             }, 3000);
+            return;
           }
         });
     });
