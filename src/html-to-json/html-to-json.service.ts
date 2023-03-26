@@ -21,6 +21,9 @@ export class HtmlToJsonService {
 
             img: function (row) {
               var link = row.find('.cl-thumb')[0];
+              if (!link) {
+                link = row.find('img')[0];
+              }
               return link?.attribs?.src;
             },
             price: function (row) {
