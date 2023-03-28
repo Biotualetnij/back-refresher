@@ -17,8 +17,12 @@ export class AppService {
     private proxyRequest: ProxyRequestService,
     private hash: HashService,
     private locker: LockerService,
-  ) {}
-
+  ) {
+    setInterval(() => {
+      this.bundleDuplicates = 12;
+    }, 20 * 60 * 1000);
+  }
+  private bundleDuplicates: number = 12;
   async getRefreshedPage(
     url: string,
     res: Response,
@@ -42,15 +46,22 @@ export class AppService {
         }, 3000);
         return;
       }
-
+      console.log(this.bundleDuplicates);
       this.locker.setUrlInProcess(url);
+      this.bundleDuplicates++;
+      let query = `?bundleDuplicates=${this.bundleDuplicates}&${randomQuery}=${randomQuery}`;
+      if (url.indexOf('?') > -1) {
+        query = `&bundleDuplicates=${this.bundleDuplicates}&${randomQuery}=${randomQuery}`;
+      }
+      let data = url.match(/#search=\d+~\w+~\d+~\d+/);
+      url = url.replace(/#search=\d+~\w+~\d+~\d+/, '');
 
       this.proxyRequest
-        .getProxyRequest(url + `&${randomQuery}=${randomQuery}`)
+        .getProxyRequest(url + `${query}` + data[0])
         .then((body) => {
           try {
             this.htmlToJson.getJson(body).done((result) => {
-              this.locker.setUrlProcessFinished(url);
+              this.locker.setUrlProcessFinished(url + data[0]);
 
               var page = result;
 
@@ -68,7 +79,10 @@ export class AppService {
                     result?.cars?.filter[1]?.name +
                     result?.cars?.filter[2]?.name
                   : '';
-              if (this.hash.hashExist(url, names) || body == 'error') {
+              if (
+                this.hash.hashExist(url + data[0], names) ||
+                body == 'error'
+              ) {
                 if (
                   isfirstTime ||
                   !this.hash.clientSawHash(clientCode, names)
@@ -85,14 +99,14 @@ export class AppService {
                 }
               } else {
                 this.hash.setClientSaw(clientCode, names);
-                this.hash.setUrlHash(url, names);
+                this.hash.setUrlHash(url + data[0], names);
 
                 resolve(page);
                 return;
               }
             });
           } catch (error) {
-            this.locker.setUrlProcessFinished(url);
+            this.locker.setUrlProcessFinished(url + data[0]);
             console.log(error);
             setTimeout(() => {
               resolve({ data: 'No change', isNotNeeded: true, error: true });
@@ -101,6 +115,7 @@ export class AppService {
           }
         });
     });
+
     // console.log(response.data);
 
     // console.log(this.hash + ' this is hash ass was', hash + ' this is not');
