@@ -28,13 +28,13 @@ export class ProxyRequestService {
       while (true) {
         console.log(this.proxy[this.currentProxyIndex]);
         this.browser = await puppeteer.launch({
-          // headless: true,
+          headless: true,
           args: [
             this.proxy[this.currentProxyIndex],
-            // '--no-sandbox',
-            // '--disable-setuid-sandbox',
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
           ],
-          // ignoreDefaultArgs: ['--disable-extensions'],
+          ignoreDefaultArgs: ['--disable-extensions'],
         });
 
         break;
